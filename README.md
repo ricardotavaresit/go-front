@@ -1,4 +1,4 @@
-## GoContact - BackEnd
+## GoContact - FrontEnd
 
 > Projeto desenvolvido no âmbito do processo de recrutamento da GoContact & Michael Page
 
@@ -9,29 +9,22 @@
 
 ## Quick start
 
-- Clone the repo: `git clone https://github.com/ricardotavaresit/go-back.git`
+- Clone the repo: `git clone https://github.com/ricardotavaresit/go-front.git`
 
 - Install dependencies: `npm install` or `yarn`
 
 - Start the server: `npm run start` or `yarn start`
 
-- Views are on: `localhost:3333`
+- Views are on: `localhost:3000`
 
 ## :computer: Technologies used
 
 Tecnologies:
 
-- NodeJS;
-- Express;
+- React;
+- Material UI;
 - JavaScript;
 
-DataBases:
-
-- MongoDB;
-
-Dependencies:
-
-- Express;
 
 ## Contact Us
 
