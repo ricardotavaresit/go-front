@@ -1,121 +1,296 @@
-import React, { useState } from 'react';
-import clsx from 'clsx';
-import PerfectScrollbar from 'react-perfect-scrollbar';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/styles';
+import { lighten, makeStyles } from '@material-ui/core/styles';
 import {
-  Card,
-  CardHeader,
-  CardContent,
-  Divider,
   Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
+  TablePagination,
   TableRow,
-  Tooltip,
-  TableSortLabel
+  TableSortLabel,
+  Paper,
+  FormControlLabel,
+  Switch,
+  Toolbar,
+  Typography,
+  CircularProgress,
 } from '@material-ui/core';
 
-import { useLog } from '../../../../hooks/useLog';
+import { useLog } from 'hooks/useLog';
+import { v4 as uuid } from 'uuid';
 
+function createData(cidade, data) {
+  return { cidade, data };
+}
 
-const useStyles = makeStyles(theme => ({
-  root: {},
-  content: {
-    padding: 0
-  },
-  inner: {
-    minWidth: 800
-  },
-  statusContainer: {
-    display: 'flex',
-    alignItems: 'center'
-  },
-  status: {
-    marginRight: theme.spacing(1)
-  },
-  actions: {
-    justifyContent: 'flex-end'
+function descendingComparator(a, b, orderBy) {
+  if (b[orderBy] < a[orderBy]) {
+    return -1;
   }
-}));
+  if (b[orderBy] > a[orderBy]) {
+    return 1;
+  }
+  return 0;
+}
 
-const statusColors = {
-  delivered: 'success',
-  pending: 'info',
-  refunded: 'danger'
-};
+function getComparator(order, orderBy) {
+  return order === 'desc'
+    ? (a, b) => descendingComparator(a, b, orderBy)
+    : (a, b) => -descendingComparator(a, b, orderBy);
+}
 
-const LogsTable = props => {
-  const { className, ...rest } = props;
-  const { logData } = useLog();
-  const classes = useStyles();
+function stableSort(array, comparator) {
+  const stabilizedThis = array.map((el, index) => [el, index]);
+  stabilizedThis.sort((a, b) => {
+    const order = comparator(a[0], b[0]);
+    if (order !== 0) return order;
+    return a[1] - b[1];
+  });
+  return stabilizedThis.map((el) => el[0]);
+}
 
- 
+const headCells = [
+  { id: 'cidade', numeric: false, disablePadding: false, label: 'Cidade' },
+  { id: 'data', numeric: true, disablePadding: false, label: 'Data' },
+];
 
-  console.log('Passei no LogTables');
-  console.log(logData);
+function EnhancedTableHead(props) {
+
+
+  const { classes, order, orderBy, onRequestSort } = props;
+  const createSortHandler = (property) => (event) => {
+    onRequestSort(event, property);
+  };
 
   return (
-    <Card
-      {...rest}
-      className={clsx(classes.root, className)}
-    >
-      <CardHeader
-        title="Table Log"
-      />
-      <Divider />
-      <CardContent className={classes.content}>
-        <PerfectScrollbar>
-          <div className={classes.inner}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Order Ref</TableCell>
-                  <TableCell>Customer</TableCell>
-                  <TableCell sortDirection="desc">
-                    <Tooltip
-                      enterDelay={300}
-                      title="Sort"
-                    >
-                      <TableSortLabel
-                        active
-                        direction="desc"
-                      >
-                        Date
-                      </TableSortLabel>
-                    </Tooltip>
-                  </TableCell>
-                  <TableCell>Status</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {/*}
-                {logData && logData.map( data  => (
-                  <TableRow
-                    hover
-                    key={data._id}
-                  >
-              
-                    <TableCell>{data.cities}</TableCell>
-                    <TableCell>{data.createdAt}</TableCell>
-        
-                  </TableRow>
-                ))}
-*/}
-              </TableBody>
-            </Table>
-          </div>
-        </PerfectScrollbar>
-      </CardContent>
-      <Divider />
-   
-    </Card>
+    <TableHead>
+      <TableRow>
+        <TableCell padding="checkbox" />
+        {headCells.map((headCell) => (
+          <TableCell
+            align="left"
+            key={headCell.id}
+            padding={headCell.disablePadding ? 'none' : 'normal'}
+            sortDirection={orderBy === headCell.id ? order : false}
+          >
+            <TableSortLabel
+              active={orderBy === headCell.id}
+              direction={orderBy === headCell.id ? order : 'asc'}
+              onClick={createSortHandler(headCell.id)}
+            >
+              {headCell.label}
+              {orderBy === headCell.id ? (
+                <span
+                  className={classes.visuallyHidden}
+                >
+                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                </span>
+              ) : null}
+            </TableSortLabel>
+          </TableCell>
+        ))}
+      </TableRow>
+    </TableHead>
+  );
+}
+
+EnhancedTableHead.propTypes = {
+  classes: PropTypes.object.isRequired,
+  onRequestSort: PropTypes.func.isRequired,
+  order: PropTypes.oneOf(['asc', 'desc']).isRequired,
+  orderBy: PropTypes.string.isRequired,
+  rowCount: PropTypes.number.isRequired,
+};
+const useToolbarStyles = makeStyles((theme) => ({
+  root: {
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(1),
+  },
+  highlight:
+    theme.palette.type === 'light'
+      ? {
+        color: theme.palette.secondary.main,
+        backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+      }
+      : {
+        color: theme.palette.text.primary,
+        backgroundColor: theme.palette.secondary.dark,
+      },
+  title: {
+    flex: '1 1 100%',
+  },
+}));
+
+const EnhancedTableToolbar = (props) => {
+  const classes = useToolbarStyles();
+
+  return (
+    <Toolbar >
+
+      <Typography
+        className={classes.title}
+        component="div"
+        id="tableTitle"
+        variant="h4"
+      >
+        Log
+      </Typography>
+    </Toolbar>
   );
 };
 
-LogsTable.propTypes = {
-  className: PropTypes.string
-};
 
-export default LogsTable;
+const useStyles = makeStyles((theme) => ({
+  root: {
+    width: '100%',
+  },
+  paper: {
+    width: '100%',
+    marginBottom: theme.spacing(2),
+  },
+  table: {
+    minWidth: 750,
+  },
+  visuallyHidden: {
+    border: 0,
+    clip: 'rect(0 0 0 0)',
+    height: 1,
+    margin: -1,
+    overflow: 'hidden',
+    padding: 0,
+    position: 'absolute',
+    top: 20,
+    width: 1,
+  },
+}));
+
+// eslint-disable-next-line react/no-multi-comp
+export default function EnhancedTable() {
+  const classes = useStyles();
+  const [order, setOrder] = React.useState('asc');
+  const [orderBy, setOrderBy] = React.useState('calories');
+
+  const [page, setPage] = React.useState(0);
+  const [dense, setDense] = React.useState(false);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+  const { logs, loading } = useLog();
+
+  const rows = logs.map(element => createData(element.cities, element.formattedCreatedAtData));
+
+  const handleRequestSort = (event, property) => {
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(property);
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const handleChangeDense = (event) => {
+    setDense(event.target.checked);
+  };
+
+
+  const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+
+  return (
+    <div className={classes.root}>
+      <Paper className={classes.paper}>
+        <EnhancedTableToolbar />
+
+        <TableContainer>
+          <Table
+            aria-label="enhanced table"
+            aria-labelledby="tableTitle"
+            className={classes.table}
+            size={dense ? 'small' : 'medium'}
+          >
+            <EnhancedTableHead
+              classes={classes}
+              key={Math.random()}
+              onRequestSort={handleRequestSort}
+              order={order}
+              orderBy={orderBy}
+              rowCount={rows.length}
+            />
+            <TableBody>
+              {stableSort(rows, getComparator(order, orderBy))
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row, index) => {
+                  const labelId = `enhanced-table-checkbox-${index}`;
+
+                  return (
+                    <TableRow
+                      hover
+                      key={`${index}-${uuid()}`}
+                      tabIndex={-1}
+                    >
+                      <TableCell
+                        padding="checkbox"
+                      />
+                      <TableCell
+                        align="left"
+                        component="th"
+                        id={labelId}
+                        scope="row"
+                      >
+                        {row.cidade}
+                      </TableCell>
+                      <TableCell
+                        align="left"
+                      >{row.data}</TableCell>
+
+                    </TableRow>
+
+
+                  );
+                })}
+              {emptyRows > 0 && (
+                <TableRow style={{ height: (dense ? 33 : 53) * emptyRows, }}>
+                  <TableCell
+                    align="center"
+                  >
+
+                    {loading && (
+                      <CircularProgress
+                        size={32}
+                        style={{ margin: 16 }}
+                      />
+
+                    )}
+                  </TableCell>
+
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          component="div"
+          count={rows.length}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          page={page}
+          rowsPerPage={rowsPerPage}
+          rowsPerPageOptions={[5, 10, 25]}
+        />
+      </Paper>
+      <FormControlLabel
+        control={<Switch
+          checked={dense}
+          onChange={handleChangeDense}
+        />}
+        label="Dense padding"
+      />
+    </div>
+  );
+}

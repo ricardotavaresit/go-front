@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
 
-import { RegionFilter, WeatherChart ,LatestOrders } from './components';
+import { RegionFilter, WeatherChart, LatestOrders } from './components';
 
-  
+
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(4)
@@ -28,18 +28,21 @@ const Dashboard = () => {
           <RegionFilter />
         </Grid>
 
-       
-        <Grid item xs={12}>
-          <WeatherChart />
-        </Grid>
-       
-     
+
         <Grid
           item
           xs={12}
         >
-          
-          <LatestOrders/> 
+          <WeatherChart />
+        </Grid>
+
+
+        <Grid
+          item
+          xs={12}
+        >
+
+          <LatestOrders />
         </Grid>
       </Grid>
     </div>

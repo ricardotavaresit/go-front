@@ -1,6 +1,7 @@
-import axios from 'axios';
 import React, { createContext, useEffect, useMemo, useState } from 'react';
 import palette from 'theme/palette';
+import api from './../services/api';
+import { useLog } from 'hooks/useLog';
 
 const defaultGraphicData = {
   labels: [],
@@ -10,7 +11,7 @@ const defaultGraphicData = {
       backgroundColor: palette.secondary.main,
       data: []
     }
-  ]
+  ],
 }
 
 
@@ -20,19 +21,33 @@ export function CityContextProvider({ children }) {
   const [citiesId, setCitiesId] = useState([]);
   const [citiesData, setCitiesData] = useState([]);
   const [graphicData, setGraphicData] = useState(defaultGraphicData);
+  const { addLog } = useLog();
+
 
   useEffect(() => {
     if (citiesId.length > 0) {
-
       const cityValues = citiesId.toString();
 
-      const API_URL = `http://localhost:3333/weather/${cityValues}`;
+      const API_URL = `/weather/${cityValues}`;
 
-      axios.get(API_URL, {
+      api.get(API_URL, {
 
       }).then(resposta => {
         setCitiesData(resposta.data);
+
+        resposta.data.map(data => {
+
+          api.post('/logs', {
+            cities: data.local
+          }).then(response => addLog(response.data))
+
+        })
+
+
       })
+
+
+
     }
     else {
       setCitiesData([]);
@@ -45,7 +60,7 @@ export function CityContextProvider({ children }) {
 
   useMemo(() => {
 
-    if (citiesData.length > 0) {
+    if (citiesData.length > 0 || !citiesData.length > 0) {
 
       let citiesLabel = [];
       let citiesValues = [];
@@ -54,7 +69,6 @@ export function CityContextProvider({ children }) {
         citiesLabel.push(data.local)
         citiesValues.push(Number(data.data.tMax))
       });
-
 
       const newGraphicData = {
         labels: citiesLabel,

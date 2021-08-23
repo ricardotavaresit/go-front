@@ -11,14 +11,16 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const TarefaList = (props) => {
+const Logs = (props) => {
   const classes = useStyles();
-  
+
   return (
-    <div className={classes.root}>
+    <div
+      className={classes.root}
+    >
       <LatestOrders />
     </div>
   );
 };
- 
-export default  TarefaList;
+
+export default Logs;

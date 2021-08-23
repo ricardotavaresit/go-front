@@ -30,11 +30,11 @@ export default class App extends Component {
     return (
       <ThemeProvider theme={theme}>
         <LogContextProvider>
-        <CityContextProvider>
-          <Router history={browserHistory}>
-            <Routes />
-          </Router>
-        </CityContextProvider>
+          <CityContextProvider>
+            <Router history={browserHistory}>
+              <Routes />
+            </Router>
+          </CityContextProvider>
         </LogContextProvider>
       </ThemeProvider>
     );

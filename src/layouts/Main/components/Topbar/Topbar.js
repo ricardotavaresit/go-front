@@ -1,16 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
-import { AppBar, Toolbar, Badge, Hidden, IconButton } from '@material-ui/core';
+import { AppBar, Toolbar, Hidden, IconButton } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
-import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
-import { withRouter } from 'react-router-dom'
-
-import { connect } from 'react-redux'
-import { compose } from 'redux'
-
 
 
 const useStyles = makeStyles(theme => ({
@@ -30,8 +24,6 @@ const Topbar = props => {
 
   const classes = useStyles();
 
- 
-
   return (
     <AppBar
       {...rest}
@@ -41,21 +33,10 @@ const Topbar = props => {
         <RouterLink to="/">
           <img
             alt="Logo"
-            src="/images/logos/logo--white.svg"
+            src="https://www.gocontact.com/wp-content/uploads/2021/02/cropped-cropped-logo.png"
           />
         </RouterLink>
         <div className={classes.flexGrow} />
-        <Hidden mdDown>
-          <IconButton color="inherit">
-            <Badge
-              badgeContent={props.notificacoes}
-              color="secondary"
-            >
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
-     
-        </Hidden>
         <Hidden lgUp>
           <IconButton
             color="inherit"
@@ -74,11 +55,4 @@ Topbar.propTypes = {
   onSidebarOpen: PropTypes.func
 };
 
-const mapStateToProps = state => ({
-  notificacoes: state.tarefas.quantidade
-})
-
-export default compose(
-  connect(mapStateToProps),
-  withRouter
-) (Topbar);
+export default Topbar;

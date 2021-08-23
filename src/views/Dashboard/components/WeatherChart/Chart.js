@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { Bar } from 'react-chartjs-2';
@@ -19,8 +19,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 const LatestSales = props => {
-  const { citiesId, graphicData } = useCity();
-
+  const { graphicData } = useCity();
   const { className, ...rest } = props;
 
   const classes = useStyles();
@@ -35,16 +34,14 @@ const LatestSales = props => {
         title="Previsão meteorológica"
       />
       <Divider />
-      {citiesId.length > 0 && (
-        <CardContent>
-          <div className={classes.chartContainer}>
-            <Bar
-              data={graphicData}
-              options={options}
-            />
-          </div>
-        </CardContent>
-      )}
+      <CardContent>
+        <div className={classes.chartContainer}>
+          <Bar
+            data={graphicData}
+            options={options}
+          />
+        </div>
+      </CardContent>
     </Card>
   );
 };
