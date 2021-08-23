@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import React, { useEffect } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import Input from '@material-ui/core/Input';
 import { Grid } from '@material-ui/core';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -27,23 +27,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250
-    }
-  }
-};
-/*
-const names = ['Aveiro','Beja','Braga','Bragança','Castelo Branco','Coimbra','Évora','Faro','Guarda','Leiria','Lisboa','Portalegre','Porto','Santarém','Setúbal','Viana do Castelo','Vila Real','Viseu'];
-*/
-/*
-const regions = ['Aveiro','Beja'];
- */
-
 const regions = {
   1010500: 'Aveiro',
   1020500: 'Beja',
@@ -66,18 +49,9 @@ const regions = {
 };
 
 
-function getStyles(name, regionName, theme) {
-  return {
-    fontWeight:
-      regionName.indexOf(name) === -1
-        ? theme.typography.fontWeightRegular
-        : theme.typography.fontWeightMedium
-  };
-}
 
 export default function RegionFilter() {
   const classes = useStyles();
-  const theme = useTheme();
   const [regionName, setRegionName] = React.useState([]);
   const { addCity } = useCity();
 
