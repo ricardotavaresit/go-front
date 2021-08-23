@@ -1,7 +1,6 @@
 {
-  "name": "react-material-dashboard",
-  "author": "DeviasIO",
-  "email": "contact@devias.io",
+  "name": "go-front",
+  "author": "Ricardo Tavares",
   "homepage": ".",
   "licence": "MIT",
   "version": "0.3.0",
@@ -35,7 +34,7 @@
     "chart.js": "^2.8.0",
     "clsx": "^1.0.4",
     "history": "^4.9.0",
-    "moment": "^2.24.0",
+    "moment": "^2.29.1",
     "node-sass": "^4.12.0",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
@@ -54,7 +53,6 @@
     "validate.js": "^0.13.1"
   },
   "devDependencies": {
-    "eslint": "5.16.0",
     "eslint-plugin-prettier": "^3.0.1",
     "eslint-plugin-react": "^7.24.0",
     "prettier": "^1.17.1",
