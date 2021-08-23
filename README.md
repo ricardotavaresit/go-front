@@ -4,8 +4,7 @@
 
 ## Demo
 
-- [Weather (Aveiro)](https://gocontactback.herokuapp.com/weather/1010500)
-- [Logs](https://gocontactback.herokuapp.com/logs)
+- [Go Weather](https://go-front.vercel.app)
 
 ## Quick start
 
@@ -24,7 +23,6 @@ Tecnologies:
 - React;
 - Material UI;
 - JavaScript;
-
 
 ## Contact Us
 
