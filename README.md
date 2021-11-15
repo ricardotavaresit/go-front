@@ -1,7 +1,3 @@
-## GoContact - FrontEnd
-
-> Projeto desenvolvido no âmbito do processo de recrutamento da GoContact & Michael Page
-
 ## Demo
 
 - [Go Weather](https://go-front.vercel.app)
